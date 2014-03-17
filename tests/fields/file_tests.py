@@ -482,5 +482,30 @@ class FileTest(unittest.TestCase):
         self.assertEqual(marmot.photos[0].foo, 'bar')
         self.assertEqual(marmot.photos[0].get().length, 8313)
 
+    def test_add_stream_file_to_existing_doc(self):
+        class StreamFile(Document):
+            the_file = FileField()
+
+        text = "test"
+
+        # Add an object to the collection.
+        sf = StreamFile()
+        sf.save()
+
+        # Get this object back.
+        sf = StreamFile.objects.first()
+
+        # Add the stream file field.
+        sf.the_file.new_file()
+        sf.the_file.write(text)
+        sf.the_file.close
+        sf.save()
+
+        # Get this object back again.
+        sf = StreamFile.objects.first()
+
+        # Check that the file is present
+        self.assertEqual(sf.the_file.get(), text)
+
 if __name__ == '__main__':
     unittest.main()
